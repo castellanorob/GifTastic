@@ -5,47 +5,50 @@ var characters = ["mario", "luigi", "princess peach", "bowser", "wario", "koopa"
 // displayCharacters function re-renders the HTML to display the appropriate content
 function displayCharacters() {
     
-            var character = $(this).attr("data-name");
-            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
-            character + "&api_key=hZqu2JbYxTSrSs8rKHrSPZV6ZVhYYp30&limit=10";
+  var character = $(this).attr("data-name");
+  var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+  character + "&api_key=hZqu2JbYxTSrSs8rKHrSPZV6ZVhYYp30&limit=10";
     
             
 
-            // Creating an AJAX call for the specific character name button being clicked
-            $.ajax({
-              url: queryURL,
-              method: "GET"
-            }).done(function(response) {
+  // Creating an AJAX call for the specific character name button being clicked
+  $.ajax({
+  url: queryURL,
+  method: "GET"
+  }).done(function(response) {
 
-                //console.log(queryURL);
+  //console.log(queryURL);
                 
-                //console.log(response);
-              // storing the data from the AJAX request in the results variable
-              var results = response.data;
+  //console.log(response);
+  // storing the data from the AJAX request in the results variable
+    var results = response.data;
 
-              for (var i = 0; i < results.length; i++) {
-              // Creating a div to hold the character gif
-              var characterDiv = $("<div class='character'>");
+    for (var i = 0; i < results.length; i++) {
+    // Creating a div to hold the character gif
+    var characterDiv = $("<div>");
 
-              // Creating a paragraph tag with the result item's rating
-              var p = $("<p>").text("Rating: " + results[i].rating);
+    // Creating a paragraph tag with the result item's rating
+    var p = $("<p>").text("Rating: " + results[i].rating);
     
-              // Creating an element to hold the image
-              var characterImage = $("<img>")
-              
-              // Setting the src attribute of the image to a property pulled off the result item
-              characterImage.attr("src", results[i].images.fixed_height.url);
+    // Creating an element to hold the image
+    var characterImage = $("<img>")
 
-              // Appending the image
-              characterDiv.append(p);
-              characterDiv.append(characterImage);
+    characterImage.addClass("characterGif");
+    characterImage.attr("data-state", "still");
+              
+    // Setting the src attribute of the image to a property pulled off the result item
+    characterImage.attr("src", results[i].images.fixed_height.url);
+
+    // Appending the image
+    characterDiv.append(p);
+    characterDiv.append(characterImage);
     
              
-              $("#gif-display").prepend(characterDiv);
-              }
-            });
+    $("#gif-display").prepend(characterDiv);
+    }
+  });
     
-          }
+}
          
         // Function for displaying character data
         function renderButtons() {
@@ -82,7 +85,7 @@ function displayCharacters() {
             renderButtons();
         });
 
-        $("#gif-display").on("click", function() {
+        $(document).on("click", ".characterGif", function() {
             // The attr jQuery method allows us to get or set the value of any attribute on our HTML element
             var state = $(this).attr("data-state");
             // If the clicked image's state is still, update its src attribute to what its data-animate value is.
@@ -95,10 +98,11 @@ function displayCharacters() {
               $(this).attr("src", $(this).attr("data-still"));
               $(this).attr("data-state", "still");
             }
-          });
+          console.log(state);
+           });
     
           // Adding a click event listener to all elements with a class of "character"
-          $(document).on("click", ".character", displayCharacters);
+           $(document).on("click", ".character", displayCharacters);
     
           // Calling the renderButtons function to display the intial buttons
           renderButtons();
